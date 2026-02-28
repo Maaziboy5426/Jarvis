@@ -1,7 +1,7 @@
 [build]
   base    = "web-dashboard"
   command = "npm run build"
-  publish = "web-dashboard/dist"
+  publish = "dist"
 
 [[redirects]]
   from   = "/*"
