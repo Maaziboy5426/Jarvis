@@ -16,7 +16,27 @@ import SplashScreen from './components/SplashScreen';
 import { useApp } from './state/AppContext.jsx';
 
 const PrivateShell = ({ onOpenPalette }) => {
-  const { isAuthenticated } = useApp();
+  const { isAuthenticated, sessionLoading } = useApp();
+
+  // Still resolving the Supabase session (handles OAuth callback race condition)
+  if (sessionLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh', display: 'flex', alignItems: 'center',
+        justifyContent: 'center', flexDirection: 'column', gap: '1rem',
+        background: 'var(--bg-dark)'
+      }}>
+        <div style={{
+          width: '40px', height: '40px', borderRadius: '50%',
+          border: '3px solid rgba(129,140,248,0.2)',
+          borderTop: '3px solid var(--accent-primary)',
+          animation: 'spin 0.8s linear infinite'
+        }} />
+        <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Signing you in…</span>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

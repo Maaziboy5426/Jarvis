@@ -35,6 +35,7 @@ const AppContext = createContext(null);
 
 export const AppProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
   const [history, setHistory] = useState(() => readJson(STORAGE_KEYS.history, []));
   const [macros, setMacros] = useState(() => readJson(STORAGE_KEYS.macros, []));
@@ -87,6 +88,7 @@ export const AppProvider = ({ children }) => {
       } else {
         setAuthUser(null);
       }
+      setSessionLoading(false);
     });
 
     const {
@@ -102,6 +104,7 @@ export const AppProvider = ({ children }) => {
       } else {
         setAuthUser(null);
       }
+      setSessionLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -223,6 +226,7 @@ export const AppProvider = ({ children }) => {
     () => ({
       authUser,
       isAuthenticated: !!authUser,
+      sessionLoading,
       showSplash,
       setShowSplash,
       triggerSplash,
@@ -244,7 +248,7 @@ export const AppProvider = ({ children }) => {
       updateProfile,
       storageKeys: STORAGE_KEYS,
     }),
-    [authUser, showSplash, history, macros, theme, fontSize, intentLocalOnly, signUp, logIn, logInWithGoogle, logInWithGithub, logOut, addHistoryItem, updateProfile],
+    [authUser, sessionLoading, showSplash, macros, theme, fontSize, intentLocalOnly, signUp, logIn, logInWithGoogle, logInWithGithub, logOut, addHistoryItem, updateProfile],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
