@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { Activity, Brain, Clock, Cpu, Ghost, Trash2, Zap } from 'lucide-react';
+import { Activity, Brain, Clock, Cpu, Ghost, Trash2, Zap, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useGhostMacro } from '../state/GhostMacroContext.jsx';
 import { useApp } from '../state/AppContext.jsx';
@@ -29,7 +29,8 @@ const GhostIntelligence = () => {
     (actions?.length || 0) > 0 ||
     (sessions?.length || 0) > 0 ||
     (learnedMacros?.length || 0) > 0 ||
-    (executionHistory?.length || 0) > 0;
+    (executionHistory?.length || 0) > 0 ||
+    (history?.length || 0) > 0;
 
   const metrics = useMemo(() => {
     const totalActions = actions?.length || 0;
@@ -178,94 +179,95 @@ const GhostIntelligence = () => {
         </span>
       </div>
 
-      {!hasAnyData && (
+      {!hasAnyData ? (
         <EmptyState />
+      ) : (
+        <>
+          {/* SECTION 1 — AUTOMATION OVERVIEW */}
+          <div className="card-grid-4" style={{ marginBottom: '1.25rem' }}>
+            <MetricCard icon={Activity} label="Total Actions Logged" value={metrics.totalActions} />
+            <MetricCard icon={Cpu} label="Total Sessions" value={metrics.totalSessions} />
+            <MetricCard icon={Ghost} label="Learned Ghost Macros" value={metrics.totalMacros} />
+            <MetricCard icon={Zap} label="Auto-Executions Triggered" value={metrics.autoExecutions} />
+          </div>
+          <div className="card-grid-2" style={{ marginBottom: '2.5rem', alignItems: 'stretch' }}>
+            <div className="glass-panel" style={{ padding: '1.35rem 1.4rem' }}>
+              <div className="flex-between" style={{ marginBottom: '0.4rem' }}>
+                <div className="muted" style={{ fontSize: '0.8rem' }}>Estimated Time Saved</div>
+                <Clock size={16} />
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800 }}>
+                <CountUpNumber value={Math.round(metrics.timeSavedMinutes)} /> min
+              </div>
+              <div className="muted" style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>
+                Computed from learned macros: \(steps × {AVG_STEP_SECONDS}s × repetitionCount\).
+              </div>
+            </div>
+
+            {/* SECTION 6 — GHOST INTELLIGENCE SCORE */}
+            <div className="glass-panel" style={{ padding: '1.35rem 1.4rem' }}>
+              <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Brain size={16} />
+                  <div style={{ fontWeight: 700 }}>Ghost Intelligence Score</div>
+                </div>
+                <span className="badge subtle">{ghostScore}%</span>
+              </div>
+              <CircularProgress value={ghostScore} />
+            </div>
+          </div>
+
+          <div className="glass-panel" style={{ padding: '1.6rem', marginBottom: '2rem' }}>
+            <div className="section-header" style={{ marginBottom: '0.9rem' }}>
+              <div className="flex-row" style={{ gap: '0.5rem' }}>
+                <Sparkles size={16} />
+                <h3>Detected Patterns</h3>
+              </div>
+            </div>
+            {detectedPatterns.taskTypePatterns.length === 0 && detectedPatterns.fileTypePatterns.length === 0 ? (
+              <p className="muted" style={{ fontSize: '0.9rem' }}>
+                No patterns detected yet. Run a few macros to let JARVIS learn from your history.
+              </p>
+            ) : (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                  {detectedPatterns.taskTypePatterns.length > 0 && (
+                    <div>
+                      <div className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>
+                        Most common tasks
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                        {detectedPatterns.taskTypePatterns.map(([type, count]) => (
+                          <span key={type} className="badge subtle">
+                            {String(type).replace('-', ' ')} · {count}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {detectedPatterns.fileTypePatterns.length > 0 && (
+                    <div>
+                      <div className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>
+                        Most used file types
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                        {detectedPatterns.fileTypePatterns.map(([type, count]) => (
+                          <span key={type} className="badge subtle">
+                            {type} · {count}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div style={{ marginTop: '0.9rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                  Patterns are based on your last {Math.min((history || []).length, 100)} macro runs.
+                </div>
+              </>
+            )}
+          </div>
+        </>
       )}
-
-      {/* SECTION 1 — AUTOMATION OVERVIEW */}
-      <div className="card-grid-4" style={{ marginBottom: '1.25rem' }}>
-        <MetricCard icon={Activity} label="Total Actions Logged" value={metrics.totalActions} />
-        <MetricCard icon={Cpu} label="Total Sessions" value={metrics.totalSessions} />
-        <MetricCard icon={Ghost} label="Learned Ghost Macros" value={metrics.totalMacros} />
-        <MetricCard icon={Zap} label="Auto-Executions Triggered" value={metrics.autoExecutions} />
-      </div>
-      <div className="card-grid-2" style={{ marginBottom: '2rem', alignItems: 'stretch' }}>
-        <div className="glass-panel" style={{ padding: '1.35rem 1.4rem' }}>
-          <div className="flex-between" style={{ marginBottom: '0.4rem' }}>
-            <div className="muted" style={{ fontSize: '0.8rem' }}>Estimated Time Saved</div>
-            <Clock size={16} />
-          </div>
-          <div style={{ fontSize: '1.4rem', fontWeight: 800 }}>
-            <CountUpNumber value={Math.round(metrics.timeSavedMinutes)} /> min
-          </div>
-          <div className="muted" style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>
-            Computed from learned macros: \(steps × {AVG_STEP_SECONDS}s × repetitionCount\).
-          </div>
-        </div>
-
-        {/* SECTION 6 — GHOST INTELLIGENCE SCORE */}
-        <div className="glass-panel" style={{ padding: '1.35rem 1.4rem' }}>
-          <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Brain size={16} />
-              <div style={{ fontWeight: 700 }}>Ghost Intelligence Score</div>
-            </div>
-            <span className="badge subtle">{ghostScore}%</span>
-          </div>
-          <CircularProgress value={ghostScore} />
-        </div>
-      </div>
-
-      <div className="glass-panel" style={{ padding: '1.6rem', marginBottom: '2rem' }}>
-        <div className="section-header" style={{ marginBottom: '0.9rem' }}>
-          <div className="flex-row" style={{ gap: '0.5rem' }}>
-            <Sparkles size={16} />
-            <h3>Detected Patterns</h3>
-          </div>
-        </div>
-        {detectedPatterns.taskTypePatterns.length === 0 && detectedPatterns.fileTypePatterns.length === 0 ? (
-          <p className="muted" style={{ fontSize: '0.9rem' }}>
-            No patterns detected yet. Run a few macros to let JARVIS learn from your history.
-          </p>
-        ) : (
-          <>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-              {detectedPatterns.taskTypePatterns.length > 0 && (
-                <div>
-                  <div className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>
-                    Most common tasks
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                    {detectedPatterns.taskTypePatterns.map(([type, count]) => (
-                      <span key={type} className="badge subtle">
-                        {String(type).replace('-', ' ')} · {count}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {detectedPatterns.fileTypePatterns.length > 0 && (
-                <div>
-                  <div className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>
-                    Most used file types
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                    {detectedPatterns.fileTypePatterns.map(([type, count]) => (
-                      <span key={type} className="badge subtle">
-                        {type} · {count}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div style={{ marginTop: '0.9rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-              Patterns are based on your last {Math.min((history || []).length, 100)} macro runs.
-            </div>
-          </>
-        )}
-      </div>
-
 
       <div className="card-grid-2" style={{ alignItems: 'stretch', marginBottom: '2rem' }}>
         {/* SECTION 2 — LEARNED MACROS TABLE */}
