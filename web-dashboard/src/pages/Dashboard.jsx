@@ -7,6 +7,7 @@ import LiveActivityFeed from '../components/dashboard/LiveActivityFeed';
 import AIInsightsPanel from '../components/dashboard/AIInsightsPanel';
 import GhostIntelligenceCard from '../components/dashboard/GhostIntelligenceCard';
 import RecentFilesSection from '../components/dashboard/RecentFilesSection';
+import BrandLogo from '../components/BrandLogo.jsx';
 
 const actions = [
   {
@@ -49,9 +50,10 @@ const Dashboard = () => {
 
   return (
     <div className="page-container">
-      <div style={{ marginTop: '1rem', marginBottom: '1.5rem', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.2rem', letterSpacing: '0.06em' }}>Jarvis</h1>
-        <p className="muted" style={{ marginTop: '0.35rem' }}>
+      <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+        <BrandLogo size="md" className="brand-logo-fade-in" />
+        <h1 style={{ fontSize: '3rem', letterSpacing: '0.06em' }}>Jarvis</h1>
+        <p className="muted" style={{ marginTop: '0.1rem' }}>
           Think Less. Do More.
         </p>
       </div>
