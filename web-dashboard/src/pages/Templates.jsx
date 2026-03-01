@@ -83,7 +83,7 @@ const TEMPLATES = [
     icon: Mail,
     usedCount: 6,
     action: 'rewrite',
-    task: 'Using the data in this spreadsheet, draft personalized outreach email templates. For each row, generate a professional email body with a compelling subject line, a personalized opening, a clear value proposition, and a call-to-action.',
+    task: 'Analyze the data in this spreadsheet and draft a comprehensive, mannered email summary of the findings. The email should include: 1) A professional subject line. 2) A structured breakdown of the data in a logical and orderly fashion (using bullet points and sections). 3) A clear interpretation of the most important metrics or figures. 4) A concise conclusion and recommended next steps. The tone should be executive-ready, ensuring the summary is both professional and easy to digest.',
     fileTypes: '.xlsx, .csv',
     hint: 'Upload your contact/data spreadsheet (XLSX or CSV)',
   },
