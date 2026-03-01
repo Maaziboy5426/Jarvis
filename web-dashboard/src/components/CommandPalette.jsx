@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Command, Play, LayoutDashboard, FileText, Clock, Settings, Folder, Ghost, Sparkles, Brain } from 'lucide-react';
+import { Command, Play, LayoutDashboard, FileText, Clock, Settings, Folder, Ghost, Brain } from 'lucide-react';
 
 const CommandPalette = ({ open, onClose }) => {
   const navigate = useNavigate();
@@ -10,7 +10,6 @@ const CommandPalette = ({ open, onClose }) => {
   const commands = React.useMemo(
     () => [
       { label: 'Dashboard', icon: LayoutDashboard, meta: 'Navigation', run: () => navigate('/') },
-      { label: 'Smart Intent Prediction', icon: Sparkles, meta: 'Navigation', run: () => navigate('/smart-intent') },
       { label: 'Run Macro', icon: Play, meta: 'Navigation', run: () => navigate('/run-macro') },
       { label: 'My Macros', icon: Folder, meta: 'Navigation', run: () => navigate('/my-macros') },
       { label: 'Ghost Macros', icon: Ghost, meta: 'Navigation', run: () => navigate('/ghost-macros') },

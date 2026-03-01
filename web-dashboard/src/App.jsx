@@ -8,7 +8,6 @@ import Templates from './pages/Templates';
 import MyMacros from './pages/MyMacros';
 import GhostMacros from './pages/GhostMacros';
 import GhostIntelligence from './pages/GhostIntelligence.jsx';
-import SmartIntentPrediction from './pages/SmartIntentPrediction.jsx';
 import Settings from './pages/Settings';
 import Auth from './pages/Auth';
 import CommandPalette from './components/CommandPalette';
@@ -77,7 +76,6 @@ const App = () => {
             <Route path="/my-macros" element={<MyMacros />} />
             <Route path="/ghost-macros" element={<GhostMacros />} />
             <Route path="/ghost-intelligence" element={<GhostIntelligence />} />
-            <Route path="/smart-intent" element={<SmartIntentPrediction />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>

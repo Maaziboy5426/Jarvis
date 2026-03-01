@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Lock, Search, Menu, LayoutDashboard, Play, Folder, Ghost, FileText, Clock, Settings, LogOut, Brain, Sparkles } from 'lucide-react';
+import { ShieldCheck, Lock, Search, Menu, LayoutDashboard, Play, Folder, Ghost, FileText, Clock, Settings, LogOut, Brain } from 'lucide-react';
 import { useApp } from '../state/AppContext.jsx';
 import BrandLogo from './BrandLogo.jsx';
 
@@ -22,7 +22,6 @@ const Layout = ({ onOpenPalette }) => {
 
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { icon: Sparkles, label: 'Smart Intent Prediction', path: '/smart-intent' },
     { icon: Play, label: 'Run Macro', path: '/run-macro' },
     { icon: Folder, label: 'My Macros', path: '/my-macros' },
     { icon: Ghost, label: 'Ghost Macros', path: '/ghost-macros' },
