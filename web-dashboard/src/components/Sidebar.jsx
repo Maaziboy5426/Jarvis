@@ -16,7 +16,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useApp } from '../state/AppContext.jsx';
-import BrandLogo from './BrandLogo.jsx';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -48,28 +47,12 @@ const Sidebar = () => {
         background: 'rgba(5, 8, 10, 0.7)',
         backdropFilter: 'blur(20px)',
         borderRight: '1px solid var(--border-color)',
-        padding: '1.75rem 1.5rem',
+        padding: '1.25rem 1rem',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 60,
       }}
     >
-      <div
-        className="glass-panel"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.85rem',
-          padding: '0.9rem 1rem',
-          marginBottom: '2.5rem',
-        }}
-      >
-        <BrandLogo size="sm" />
-        <div>
-          <div style={{ fontWeight: 800, letterSpacing: '0.5px' }}>JARVIS</div>
-          <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Command Center</div>
-        </div>
-      </div>
 
       <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
         {navItems.map((item) => (
