@@ -50,10 +50,10 @@ const Dashboard = () => {
 
   return (
     <div className="page-container">
-      <div style={{ marginTop: '2.5rem', marginBottom: '2.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+      <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
         <BrandLogo size="xl" className="brand-logo-fade-in" />
         <h1 style={{ fontSize: '4.5rem', letterSpacing: '0.06em', fontWeight: 900, background: 'linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Jarvis</h1>
-        <p className="muted" style={{ marginTop: '0.2rem', fontSize: '1.2rem' }}>
+        <p className="muted" style={{ marginTop: '0.1rem', fontSize: '1.2rem' }}>
           Think Less. Do More.
         </p>
       </div>
