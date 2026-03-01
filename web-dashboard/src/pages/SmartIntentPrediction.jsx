@@ -7,7 +7,7 @@ import { INTENT_ACTIONS, parseIntent } from '../utils/intentParser.js';
 
 const SmartIntentPrediction = () => {
   const navigate = useNavigate();
-  const { intentLocalOnly, setIntentLocalOnly, storageKeys } = useApp();
+  const { storageKeys } = useApp();
   const { logAction } = useGhostMacro();
 
   const [commandText, setCommandText] = useState('');
@@ -119,7 +119,7 @@ const SmartIntentPrediction = () => {
               />
               <button
                 type="button"
-                onClick={() => {}}
+                onClick={() => { }}
                 style={{
                   position: 'absolute',
                   right: '2.3rem',
@@ -154,68 +154,31 @@ const SmartIntentPrediction = () => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', fontSize: '0.8rem' }}>
-              <span className="badge subtle">Try:</span>
-              <button
-                type="button"
-                className="btn btn-ghost"
-                style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem' }}
-                onClick={() => setCommandText('Summarize this PDF and highlight action items')}
-              >
-                Summarize this PDF
-              </button>
-              <button
-                type="button"
-                className="btn btn-ghost"
-                style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem' }}
-                onClick={() => setCommandText('Auto format this Excel sheet for reporting')}
-              >
-                Auto format this Excel
-              </button>
-              <button
-                type="button"
-                className="btn btn-ghost"
-                style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem' }}
-                onClick={() => setCommandText('Rewrite these bullet points professionally')}
-              >
-                Rewrite these bullet points
-              </button>
-            </div>
-            <div
-              className={`toggle-pill ${intentLocalOnly ? 'on' : ''}`}
-              onClick={() => setIntentLocalOnly(!intentLocalOnly)}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className="toggle-thumb" />
-              <span style={{ marginLeft: '0.4rem', fontSize: '0.75rem' }}>Local only</span>
-            </div>
-          </div>
+        </div>
 
-          <div className="mono-box" style={{ minHeight: 52 }}>
-            {!intentResult && intentStatus === 'idle' && (
-              <p className="muted" style={{ fontSize: '0.85rem' }}>
-                Parsed intent and confidence will appear here before execution.
-              </p>
-            )}
-            {intentStatus === 'parsing' && (
-              <p style={{ fontSize: '0.85rem' }}>Analyzing command…</p>
-            )}
-            {intentStatus === 'error' && (
-              <p style={{ fontSize: '0.85rem', color: '#fca5a5' }}>
-                Could not parse intent. Please refine your command.
-              </p>
-            )}
-            {intentResult && (
-              <p style={{ fontSize: '0.85rem' }}>
-                Source: {intentResult.source.toUpperCase()} • Action:{' '}
-                <strong>{intentResult.intent?.action || 'unknown'}</strong> • Confidence:{' '}
-                <strong>{intentResult.confidence}%</strong>
-                {intentResult.intent?.fileType && <> • File type: {intentResult.intent.fileType}</>}
-                {intentResult.intent?.outputFormat && <> • Output: {intentResult.intent.outputFormat}</>}
-              </p>
-            )}
-          </div>
+        <div className="mono-box" style={{ minHeight: 52 }}>
+          {!intentResult && intentStatus === 'idle' && (
+            <p className="muted" style={{ fontSize: '0.85rem' }}>
+              Parsed intent and confidence will appear here before execution.
+            </p>
+          )}
+          {intentStatus === 'parsing' && (
+            <p style={{ fontSize: '0.85rem' }}>Analyzing command…</p>
+          )}
+          {intentStatus === 'error' && (
+            <p style={{ fontSize: '0.85rem', color: '#fca5a5' }}>
+              Could not parse intent. Please refine your command.
+            </p>
+          )}
+          {intentResult && (
+            <p style={{ fontSize: '0.85rem' }}>
+              Source: {intentResult.source.toUpperCase()} • Action:{' '}
+              <strong>{intentResult.intent?.action || 'unknown'}</strong> • Confidence:{' '}
+              <strong>{intentResult.confidence}%</strong>
+              {intentResult.intent?.fileType && <> • File type: {intentResult.intent.fileType}</>}
+              {intentResult.intent?.outputFormat && <> • Output: {intentResult.intent.outputFormat}</>}
+            </p>
+          )}
         </div>
       </div>
     </div>
