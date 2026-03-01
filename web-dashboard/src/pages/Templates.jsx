@@ -83,7 +83,7 @@ const TEMPLATES = [
     icon: Mail,
     usedCount: 6,
     action: 'rewrite',
-    task: 'Analyze the data in this spreadsheet and draft a comprehensive, mannered email summary of the findings. The email should include: 1) A professional subject line. 2) A structured breakdown of the data in a logical and orderly fashion (using bullet points and sections). 3) A clear interpretation of the most important metrics or figures. 4) A concise conclusion and recommended next steps. The tone should be executive-ready, ensuring the summary is both professional and easy to digest.',
+    task: 'Analyze the data in this spreadsheet and draft a comprehensive, mannered email summary of the findings. IMPORTANT: You must start your response exactly with "Subject: [Your Subject Line]". 1) Use a professional subject line. 2) Present the core spreadsheet data using a clean Markdown Table (using | and - symbols) for a highly orderly and professional grid view. 3) Provide a structured breakdown of interpretations and next steps below the table. The tone should be executive-ready, ensuring the summary is both professional and easy to digest.',
     fileTypes: '.xlsx, .csv',
     hint: 'Upload your contact/data spreadsheet (XLSX or CSV)',
   },

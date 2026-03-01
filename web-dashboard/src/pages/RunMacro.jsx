@@ -473,7 +473,22 @@ const RunMacro = () => {
   const RenderedOutput = ({ text }) => {
     if (!text) return <span style={{ color: 'var(--text-muted)' }}>Processing completed successfully. Document analysis finished.</span>;
 
-    const lines = text.split('\n');
+    const isEmail = text.trim().toLowerCase().startsWith('subject:');
+    let emailSubject = '';
+    let bodyText = text;
+
+    if (isEmail) {
+      const firstLineEnd = text.indexOf('\n');
+      if (firstLineEnd !== -1) {
+        emailSubject = text.substring(0, firstLineEnd).replace(/subject:\s*/i, '').trim();
+        bodyText = text.substring(firstLineEnd).trim();
+      } else {
+        emailSubject = text.replace(/subject:\s*/i, '').trim();
+        bodyText = '';
+      }
+    }
+
+    const lines = bodyText.split('\n');
 
     // Render inline markdown: **bold**, *italic*, `code`
     const renderInline = (str) => {
@@ -487,16 +502,16 @@ const RunMacro = () => {
         if (match[1]) {
           // inline code
           parts.push(
-            <code key={key++} style={{ background: 'rgba(239,68,68,0.12)', color: '#fca5a5', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.85em', fontFamily: 'var(--font-mono, monospace)' }}>
+            <code key={key++} style={{ background: isEmail ? 'rgba(0,0,0,0.05)' : 'rgba(239,68,68,0.12)', color: isEmail ? '#475569' : '#fca5a5', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.85em', fontFamily: 'var(--font-mono, monospace)' }}>
               {match[1].slice(1, -1)}
             </code>
           );
         } else if (match[2]) {
           // bold
-          parts.push(<strong key={key++} style={{ color: '#e2e8f0', fontWeight: 700 }}>{match[2]}</strong>);
+          parts.push(<strong key={key++} style={{ color: isEmail ? '#1e293b' : '#e2e8f0', fontWeight: 700 }}>{match[2]}</strong>);
         } else if (match[3] || match[4]) {
           // italic
-          parts.push(<em key={key++} style={{ color: '#fca5a5' }}>{match[3] || match[4]}</em>);
+          parts.push(<em key={key++} style={{ color: isEmail ? '#64748b' : '#fca5a5' }}>{match[3] || match[4]}</em>);
         }
         last = match.index + match[0].length;
       }
@@ -519,8 +534,51 @@ const RunMacro = () => {
 
       // Horizontal rule
       if (/^[-*_]{3,}$/.test(trimmed)) {
-        elements.push(<hr key={i} style={{ border: 'none', borderTop: '1px solid rgba(239,68,68,0.35)', margin: '0.75rem 0' }} />);
+        elements.push(<hr key={i} style={{ border: 'none', borderTop: isEmail ? '1px solid #e2e8f0' : '1px solid rgba(239,68,68,0.35)', margin: '0.75rem 0' }} />);
         i++;
+        continue;
+      }
+
+      // Table detection
+      if (trimmed.startsWith('|') && lines[i + 1]?.trim().includes('|')) {
+        const tableRows = [];
+        while (i < lines.length && lines[i].trim().startsWith('|')) {
+          const cells = lines[i].split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1);
+          if (lines[i].includes('---')) {
+            // skip separator row
+          } else {
+            tableRows.push(cells.map(c => c.trim()));
+          }
+          i++;
+        }
+        if (tableRows.length > 0) {
+          elements.push(
+            <div key={`table-${i}`} style={{ overflowX: 'auto', margin: '1rem 0' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', color: isEmail ? '#334155' : 'inherit' }}>
+                <thead>
+                  <tr style={{ background: isEmail ? '#f8fafc' : 'rgba(255,255,255,0.03)' }}>
+                    {tableRows[0].map((cell, idx) => (
+                      <th key={idx} style={{ padding: '0.6rem', border: isEmail ? '1px solid #e2e8f0' : '1px solid rgba(255,255,255,0.1)', textAlign: 'left', fontWeight: 700 }}>
+                        {renderInline(cell)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableRows.slice(1).map((row, rowIdx) => (
+                    <tr key={rowIdx}>
+                      {row.map((cell, cellIdx) => (
+                        <td key={cellIdx} style={{ padding: '0.6rem', border: isEmail ? '1px solid #e2e8f0' : '1px solid rgba(255,255,255,0.1)' }}>
+                          {renderInline(cell)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        }
         continue;
       }
 
@@ -528,7 +586,7 @@ const RunMacro = () => {
       const h1 = trimmed.match(/^#\s+(.+)/);
       if (h1) {
         elements.push(
-          <div key={i} style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ef4444', marginTop: '1.1rem', marginBottom: '0.3rem', letterSpacing: '0.01em', borderBottom: '1px solid rgba(239,68,68,0.3)', paddingBottom: '0.3rem' }}>
+          <div key={i} style={{ fontSize: '1.15rem', fontWeight: 800, color: isEmail ? '#0f172a' : '#ef4444', marginTop: '1.1rem', marginBottom: '0.3rem', letterSpacing: '0.01em', borderBottom: isEmail ? '2px solid #e2e8f0' : '1px solid rgba(239,68,68,0.3)', paddingBottom: '0.3rem' }}>
             {renderInline(h1[1])}
           </div>
         );
@@ -539,7 +597,7 @@ const RunMacro = () => {
       const h2 = trimmed.match(/^##\s+(.+)/);
       if (h2) {
         elements.push(
-          <div key={i} style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f87171', marginTop: '0.9rem', marginBottom: '0.2rem' }}>
+          <div key={i} style={{ fontSize: '1.05rem', fontWeight: 700, color: isEmail ? '#1e293b' : '#f87171', marginTop: '0.9rem', marginBottom: '0.2rem' }}>
             {renderInline(h2[1])}
           </div>
         );
@@ -550,7 +608,7 @@ const RunMacro = () => {
       const h3 = trimmed.match(/^#{3,}\s+(.+)/);
       if (h3) {
         elements.push(
-          <div key={i} style={{ fontSize: '0.97rem', fontWeight: 700, color: '#fca5a5', marginTop: '0.7rem', marginBottom: '0.15rem' }}>
+          <div key={i} style={{ fontSize: '0.97rem', fontWeight: 700, color: isEmail ? '#334155' : '#fca5a5', marginTop: '0.7rem', marginBottom: '0.15rem' }}>
             {renderInline(h3[1])}
           </div>
         );
@@ -561,7 +619,7 @@ const RunMacro = () => {
       if (trimmed.startsWith('>')) {
         const bqText = trimmed.replace(/^>\s*/, '');
         elements.push(
-          <div key={i} style={{ borderLeft: '3px solid #ef4444', paddingLeft: '0.85rem', margin: '0.3rem 0', color: '#94a3b8', fontStyle: 'italic', fontSize: '0.92rem' }}>
+          <div key={i} style={{ borderLeft: '3px solid #ef4444', paddingLeft: '0.85rem', margin: '0.3rem 0', color: isEmail ? '#64748b' : '#94a3b8', fontStyle: 'italic', fontSize: '0.92rem' }}>
             {renderInline(bqText)}
           </div>
         );
@@ -574,7 +632,7 @@ const RunMacro = () => {
         elements.push(
           <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.55rem', margin: '0.25rem 0', paddingLeft: '0.25rem' }}>
             <span style={{ color: '#ef4444', fontWeight: 900, fontSize: '1rem', lineHeight: '1.55', flexShrink: 0 }}>▸</span>
-            <span style={{ color: '#e2e8f0', lineHeight: 1.6, fontSize: '0.92rem' }}>{renderInline(bullet[1])}</span>
+            <span style={{ color: isEmail ? '#334155' : '#e2e8f0', lineHeight: 1.6, fontSize: '0.92rem' }}>{renderInline(bullet[1])}</span>
           </div>
         );
         i++; continue;
@@ -586,7 +644,7 @@ const RunMacro = () => {
         elements.push(
           <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', margin: '0.25rem 0', paddingLeft: '0.25rem' }}>
             <span style={{ color: '#ef4444', fontWeight: 700, fontSize: '0.85rem', minWidth: '1.4rem', lineHeight: '1.6', flexShrink: 0 }}>{numbered[1]}.</span>
-            <span style={{ color: '#e2e8f0', lineHeight: 1.6, fontSize: '0.92rem' }}>{renderInline(numbered[2])}</span>
+            <span style={{ color: isEmail ? '#334155' : '#e2e8f0', lineHeight: 1.6, fontSize: '0.92rem' }}>{renderInline(numbered[2])}</span>
           </div>
         );
         i++; continue;
@@ -597,20 +655,37 @@ const RunMacro = () => {
       if (kv && !trimmed.startsWith('http')) {
         elements.push(
           <div key={i} style={{ display: 'flex', gap: '0.5rem', margin: '0.2rem 0', fontSize: '0.9rem', lineHeight: 1.6 }}>
-            <span style={{ color: '#94a3b8', fontWeight: 600, flexShrink: 0 }}>{kv[1]}:</span>
-            <span style={{ color: '#e2e8f0' }}>{renderInline(kv[2])}</span>
+            <span style={{ color: isEmail ? '#64748b' : '#94a3b8', fontWeight: 600, flexShrink: 0 }}>{kv[1]}:</span>
+            <span style={{ color: isEmail ? '#0f172a' : '#e2e8f0' }}>{renderInline(kv[2])}</span>
           </div>
         );
         i++; continue;
       }
 
-      // Regular paragraph line
+      // Default paragraph
       elements.push(
-        <div key={i} style={{ color: '#cbd5e1', lineHeight: 1.7, fontSize: '0.92rem', margin: '0.15rem 0' }}>
-          {renderInline(trimmed)}
+        <div key={i} style={{ lineHeight: 1.65, color: isEmail ? '#334155' : '#e2e8f0', fontSize: '0.94rem', margin: '0.15rem 0' }}>
+          {renderInline(line)}
         </div>
       );
       i++;
+    }
+
+    if (isEmail) {
+      return (
+        <div className="email-template-view" style={{ background: '#ffffff', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', border: '1px solid #e2e8f0', color: '#1e293b' }}>
+          <div style={{ background: '#f8fafc', padding: '1rem 1.5rem', borderBottom: '1px solid #e2e8f0' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#64748b', marginBottom: '0.25rem' }}>Subject Line</div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>{emailSubject}</div>
+          </div>
+          <div style={{ padding: '1.5rem 2rem' }}>
+            {elements}
+          </div>
+          <div style={{ background: '#f1f5f9', padding: '0.75rem 1.5rem', fontSize: '0.75rem', color: '#64748b', textAlign: 'center' }}>
+            Drafted by JARVIS Ghost Engine • {new Date().toLocaleDateString()}
+          </div>
+        </div>
+      );
     }
 
     return <div style={{ display: 'flex', flexDirection: 'column' }}>{elements}</div>;
