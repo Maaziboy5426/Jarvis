@@ -60,7 +60,6 @@ const Layout = ({ onOpenPalette }) => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', pointerEvents: 'auto' }}>
-            <BrandLogo size="sm" />
             <button
               className="btn btn-secondary"
               style={{

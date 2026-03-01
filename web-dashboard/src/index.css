@@ -425,6 +425,10 @@ p {
   max-height: 180px;
 }
 
+.brand-logo-xl {
+  max-height: 280px;
+}
+
 @media (max-width: 640px) {
   .brand-logo {
     max-height: 76px;
