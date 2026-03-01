@@ -640,14 +640,14 @@ const RunMacro = () => {
               </div>
             </div>
             <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ width: '62px', height: '62px', borderRadius: '50%', background: `conic-gradient(var(--accent-secondary) 0% ${resultData?.qualityScore || 98}%, rgba(255,255,255,0.08) ${resultData?.qualityScore || 98}% 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 1px rgba(255,255,255,0.08)' }}>
+              <div style={{ width: '62px', height: '62px', borderRadius: '50%', background: `conic-gradient(var(--accent-secondary) 0% ${resultData?.qualityScore ?? 90}%, rgba(255,255,255,0.08) ${resultData?.qualityScore ?? 90}% 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 1px rgba(255,255,255,0.08)' }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#0f1117', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)', fontWeight: 700 }}>
-                  {resultData?.qualityScore || 98}%
+                  {resultData?.qualityScore ?? 90}%
                 </div>
               </div>
               <div>
                 <div className="badge accent" style={{ marginBottom: '0.4rem' }}>
-                  <Clock size={14} /> {resultData?.timeTaken ? `${resultData.timeTaken.toFixed(1)}s` : '4.2s'}
+                  <Clock size={14} /> {resultData?.timeTaken ? `${resultData.timeTaken.toFixed(1)}s` : '—'}
                 </div>
                 <div className="badge success">Quality score</div>
               </div>
@@ -662,7 +662,7 @@ const RunMacro = () => {
                   {resultData?.wordCount || 0} words • ~{resultData?.pageEstimate || 1} pages
                 </span>
                 <div className="badge accent" style={{ fontSize: '0.8rem' }}>
-                  Quality: {resultData?.qualityScore || 95}%
+                  Quality: {resultData?.qualityScore ?? 90}%
                 </div>
               </div>
             </div>
@@ -685,7 +685,10 @@ const RunMacro = () => {
           >
             <RotateCcw size={18} /> Process Another
           </button>
-          <button className="btn btn-secondary" style={{ border: 'none' }}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => navigate('/history')}
+          >
             View in History
           </button>
         </div>
